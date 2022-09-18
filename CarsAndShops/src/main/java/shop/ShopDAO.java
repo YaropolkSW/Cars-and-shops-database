@@ -1,17 +1,20 @@
-package dao;
+package shop;
+
+import car.Car;
+import client.CarOwner;
 
 import java.util.List;
 
 public interface ShopDAO {
     void createTable();
 
-    List<Car> readAllInShop(final int shopId);
+    List<Car> getAllCars(final int shopId);
 
-    List<Car> readInShopByPrice(final int shopId, final int price);
+    List<Car> getCarsByPrice(final int shopId, final int price);
 
     List<Car> readAllByPrice(final int price);
 
-    Client readByClient(final int clientId);
+    CarOwner readByClient(final int clientId);
 
     List<Car> readAll();
 

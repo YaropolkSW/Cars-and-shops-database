@@ -1,4 +1,4 @@
-package dao;
+package shop;
 
 public class Shop {
     private int id;

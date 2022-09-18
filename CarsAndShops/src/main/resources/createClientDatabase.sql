@@ -9,7 +9,8 @@ CREATE TABLE client(
     FOREIGN KEY (car_id) REFERENCES car (car_id) ON DELETE CASCADE
 );
 
-INSERT INTO client(client_name, city, car_id) VALUES ('Василий Ф.И.', 'Москва', 1),
-                                              ('Надежда К.Ю.', 'Самара', 3),
-                                              ('Леонид М.В.', 'Санкт-Петербург', 5),
-                                              ('Вероника Л.К.', 'Тольятти', 7);
+INSERT INTO client(client_name, city, car_id)
+VALUES('Василий Ф.И.', 'Москва', 1),
+      ('Надежда К.Ю.', 'Самара', 3),
+      ('Леонид М.В.', 'Санкт-Петербург', 5),
+      ('Вероника Л.К.', 'Тольятти', 7);

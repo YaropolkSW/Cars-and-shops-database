@@ -1,4 +1,4 @@
-package dao;
+package car;
 
 public class Car {
     private String shop;

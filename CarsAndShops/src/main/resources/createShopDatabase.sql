@@ -5,7 +5,8 @@ CREATE TABLE shop(
     shop_name VARCHAR(50) NOT NULL
 );
 
-INSERT INTO shop(shop_name) VALUES('Subaru Official Dealer'),
-                             ('Chevrolet Official Dealer'),
-                             ('Kia Official Dealer'),
-                             ('Trade-In Dealer');
+INSERT INTO shop(shop_name)
+VALUES('Subaru Official Dealer'),
+      ('Chevrolet Official Dealer'),
+      ('Kia Official Dealer'),
+      ('Trade-In Dealer');

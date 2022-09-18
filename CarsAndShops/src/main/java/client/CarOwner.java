@@ -1,6 +1,6 @@
-package dao;
+package client;
 
-public class Client {
+public class CarOwner {
     private int id;
     private String name;
     private String city;

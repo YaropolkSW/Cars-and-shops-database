@@ -1,13 +1,13 @@
-package dao;
+package client;
 
 import java.util.List;
 
-public interface ClientDAO {
+public interface CarOwnerDAO {
     void createTable();
 
-    Client read(final int id);
+    CarOwner read(final int id);
 
-    List<Client> readAll();
+    List<CarOwner> readAll();
 
     void save(final String name, final String city, final int carId);
 

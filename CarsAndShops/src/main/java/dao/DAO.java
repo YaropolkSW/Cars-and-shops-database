@@ -15,21 +15,16 @@ public class DAO {
     private final static String PATH_TO_CLIENT_FILE = "src/main/resources/createClientDatabase.sql";
     private final static String ERROR_WHILE_READING_FILE_MESSAGE = "Ошибка во время чтения файла!";
 
-    public DAO() {
-        createShopDatabase();
-        createCarDatabase();
-        createClientDatabase();
-    }
 
-    private void createShopDatabase() {
+    public void createShopDatabase() {
         createExecuteClose(PATH_TO_SHOP_FILE);
     }
 
-    private void createCarDatabase() {
+    public void createCarDatabase() {
         createExecuteClose(PATH_TO_CAR_FILE);
     }
 
-    private void createClientDatabase() {
+    public void createClientDatabase() {
         createExecuteClose(PATH_TO_CLIENT_FILE);
     }
 
