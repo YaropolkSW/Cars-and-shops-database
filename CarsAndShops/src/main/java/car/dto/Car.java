@@ -1,16 +1,11 @@
-package car;
+package car.dto;
 
 public class Car {
-    private String shop;
     private int id;
     private String brand;
     private String model;
     private int ageOfProduce;
     private int price;
-
-    public void setShop(final String shop) {
-        this.shop = shop;
-    }
 
     public void setId(final int id) {
         this.id = id;
@@ -34,7 +29,7 @@ public class Car {
 
     @Override
     public String toString() {
-        return String.format("Shop - %s\nID - %d\nBrand - %s\nModel - %s\nAge of produce - %d\nPrice - %d\n",
-                shop, id, brand, model, ageOfProduce, price);
+        return String.format("ID - %d\nBrand - %s\nModel - %s\nAge of produce - %d\nPrice - %d\n",
+                id, brand, model, ageOfProduce, price);
     }
 }

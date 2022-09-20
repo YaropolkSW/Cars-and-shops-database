@@ -1,10 +1,10 @@
-package client;
+package client.dao;
 
-import car.CarDAOImpl;
+import client.dto.CarOwner;
 import dao.Migration;
 import factory.ConnectionFactory;
 import factory.StatementFactory;
-import pattern.InitialPatterns;
+import query.SQLQueries;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,14 +16,15 @@ import java.util.List;
 public class CarOwnerDAOImpl implements CarOwnerDAO {
     private final static String CHOICE_OF_ID_PATTERN = "Пожалуйста, выберите один из приведенных ID: ";
     private final static String GET_VALUES_ERROR_MESSAGE = "Ошибка при получении значений!";
+    private final static String NEXT_LINE_PATTERN = "\n";
     private final static String CLIENT_ID = "client_id";
     private final static String CLIENT_NAME = "client_name";
     private final static String CITY = "city";
-    private final static String CAR_ID = "car_id";
+    private final static String BRAND = "brand";
+    private final static String MODEL = "model";
 
     private final ConnectionFactory connectionFactory = new ConnectionFactory();
     private final StatementFactory statementFactory = new StatementFactory();
-    private final CarDAOImpl carDAO = new CarDAOImpl();
 
     @Override
     public void createTable() {
@@ -36,7 +37,7 @@ public class CarOwnerDAOImpl implements CarOwnerDAO {
 
         final Connection connection = connectionFactory.createConnection();
         final PreparedStatement statement = statementFactory.createStatement(connection,
-                String.format(InitialPatterns.OWNER_READ_LINE_PATTERN, id));
+                String.format(SQLQueries.OWNER_READ_LINE_PATTERN, id));
 
         try {
             final ResultSet resultSet = statement.executeQuery();
@@ -44,7 +45,7 @@ public class CarOwnerDAOImpl implements CarOwnerDAO {
                 carOwner.setId(id);
                 carOwner.setName(resultSet.getString(CLIENT_NAME));
                 carOwner.setCity(resultSet.getString(CITY));
-                carOwner.setCar(carDAO.read(resultSet.getInt(CAR_ID)).toString());
+                carOwner.setCar(resultSet.getString(BRAND) + " " + resultSet.getString(MODEL));
             }
         } catch (SQLException e) {
             System.out.println(GET_VALUES_ERROR_MESSAGE);
@@ -62,7 +63,7 @@ public class CarOwnerDAOImpl implements CarOwnerDAO {
 
         final Connection connection = connectionFactory.createConnection();
         final PreparedStatement statement = statementFactory.createStatement(connection,
-                InitialPatterns.OWNER_READ_ALL_LINES_PATTERN);
+                SQLQueries.OWNER_READ_ALL_LINES_PATTERN);
 
         try {
             final ResultSet resultSet = statement.executeQuery();
@@ -71,7 +72,8 @@ public class CarOwnerDAOImpl implements CarOwnerDAO {
                 carOwner.setId(resultSet.getInt(CLIENT_ID));
                 carOwner.setName(resultSet.getString(CLIENT_NAME));
                 carOwner.setCity(resultSet.getString(CITY));
-                carOwner.setCar(carDAO.read(resultSet.getInt(CAR_ID)).toString());
+                carOwner.setCar(resultSet.getString(BRAND) + " " + resultSet.getString(MODEL));
+                carOwners.add(carOwner);
             }
         } catch (SQLException e) {
             System.out.println(GET_VALUES_ERROR_MESSAGE);
@@ -87,7 +89,7 @@ public class CarOwnerDAOImpl implements CarOwnerDAO {
     public void save(final String name, final String city, final int carId) {
         final Connection connection = connectionFactory.createConnection();
         final PreparedStatement statement = statementFactory.createStatement(connection,
-                String.format(InitialPatterns.OWNER_SAVE_LINE_PATTERN, name, city, carId));
+                String.format(SQLQueries.OWNER_SAVE_LINE_PATTERN, name, city, carId));
 
         statementFactory.executeStatement(statement);
 
@@ -99,7 +101,7 @@ public class CarOwnerDAOImpl implements CarOwnerDAO {
     public void deleteTable() {
         final Connection connection = connectionFactory.createConnection();
         final PreparedStatement statement = statementFactory.createStatement(connection,
-                InitialPatterns.OWNER_DELETE_TABLE_PATTERN);
+                SQLQueries.OWNER_DELETE_TABLE_PATTERN);
 
         statementFactory.executeStatement(statement);
 
@@ -111,7 +113,7 @@ public class CarOwnerDAOImpl implements CarOwnerDAO {
     public void delete(final int id) {
         final Connection connection = connectionFactory.createConnection();
         final PreparedStatement statement = statementFactory.createStatement(connection,
-                String.format(InitialPatterns.OWNER_DELETE_LINE_PATTERN, id));
+                String.format(SQLQueries.OWNER_DELETE_LINE_PATTERN, id));
 
         statementFactory.executeStatement(statement);
 
@@ -124,13 +126,12 @@ public class CarOwnerDAOImpl implements CarOwnerDAO {
 
         final Connection connection = connectionFactory.createConnection();
         final PreparedStatement statement = statementFactory.createStatement(connection,
-                InitialPatterns.OWNER_READ_ALL_ID_PATTERN);
+                SQLQueries.OWNER_READ_ALL_ID_PATTERN);
 
-        final ResultSet resultSet;
         try {
-            resultSet = statement.executeQuery();
+            final ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                idList.add(resultSet.getInt(CAR_ID));
+                idList.add(resultSet.getInt(CLIENT_ID));
             }
         } catch (SQLException e) {
             System.out.println(GET_VALUES_ERROR_MESSAGE);
@@ -141,6 +142,6 @@ public class CarOwnerDAOImpl implements CarOwnerDAO {
 
     @Override
     public void choiceOfId() {
-        System.out.println(CHOICE_OF_ID_PATTERN + InitialPatterns.NEXT_LINE_PATTERN + readAllId());
+        System.out.println(CHOICE_OF_ID_PATTERN + NEXT_LINE_PATTERN + readAllId());
     }
 }

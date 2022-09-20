@@ -1,12 +1,11 @@
-package shop;
+package shop.dao;
 
-import car.Car;
-import car.CarDAOImpl;
-import client.CarOwner;
+import car.dto.Car;
+import client.dto.CarOwner;
 import dao.Migration;
 import factory.ConnectionFactory;
 import factory.StatementFactory;
-import pattern.InitialPatterns;
+import query.SQLQueries;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,6 +17,7 @@ import java.util.List;
 public class ShopDAOImpl implements ShopDAO {
     private final static String CHOICE_OF_ID_PATTERN = "Пожалуйста, выберите один из приведенных ID: ";
     private final static String GET_VALUES_ERROR_MESSAGE = "Ошибка при получении значений!";
+    private final static String NEXT_LINE_PATTERN = "\n";
     private final static String SHOP_ID = "shop_id";
     private final static String SHOP_NAME = "shop_name";
     private final static String CAR_ID = "car_id";
@@ -30,9 +30,6 @@ public class ShopDAOImpl implements ShopDAO {
 
     private final ConnectionFactory connectionFactory = new ConnectionFactory();
     private final StatementFactory statementFactory = new StatementFactory();
-    private final CarDAOImpl carDAO = new CarDAOImpl();
-
-
 
     @Override
     public void createTable() {
@@ -43,30 +40,19 @@ public class ShopDAOImpl implements ShopDAO {
     public List<Car> getAllCars(final int shopId) {
         final List<Car> cars = new ArrayList<>();
         final Connection connection = connectionFactory.createConnection();
-        final PreparedStatement firstStatement = statementFactory.createStatement(connection,
-                String.format(InitialPatterns.SHOP_READ_LINE_PATTERN, shopId));
+        final PreparedStatement statement = statementFactory.createStatement(connection,
+                String.format(SQLQueries.SHOP_GET_ALL_CARS_PATTERN, shopId));
 
         try {
-            final ResultSet firstResultSet = firstStatement.executeQuery();
-            while (firstResultSet.next()) {
-
-                final String shopName = firstResultSet.getString(SHOP_NAME);
-
-                final PreparedStatement secondStatement = statementFactory.createStatement(connection,
-                        String.format(InitialPatterns.SHOP_GET_ALL_CARS_PATTERN, shopName));
-
-                final ResultSet secondResultSet = secondStatement.executeQuery();
-
-                while (secondResultSet.next()) {
-                    final Car car = new Car();
-                    car.setShop(secondResultSet.getString(SHOP_NAME));
-                    car.setId(secondResultSet.getInt(CAR_ID));
-                    car.setBrand(secondResultSet.getString(BRAND));
-                    car.setModel(secondResultSet.getString(MODEL));
-                    car.setAgeOfProduce(secondResultSet.getInt(AGE_OF_PRODUCE));
-                    car.setPrice(secondResultSet.getInt(PRICE));
-                    cars.add(car);
-                }
+            final ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                final Car car = new Car();
+                car.setId(resultSet.getInt(CAR_ID));
+                car.setBrand(resultSet.getString(BRAND));
+                car.setModel(resultSet.getString(MODEL));
+                car.setAgeOfProduce(resultSet.getInt(AGE_OF_PRODUCE));
+                car.setPrice(resultSet.getInt(PRICE));
+                cars.add(car);
             }
         } catch (SQLException e) {
             System.out.println(GET_VALUES_ERROR_MESSAGE);
@@ -79,49 +65,13 @@ public class ShopDAOImpl implements ShopDAO {
     public List<Car> getCarsByPrice(final int shopId, final int price) {
         final List<Car> cars = new ArrayList<>();
         final Connection connection = connectionFactory.createConnection();
-        final PreparedStatement firstStatement = statementFactory.createStatement(connection,
-                String.format(InitialPatterns.SHOP_READ_LINE_PATTERN, shopId));
-
-        try {
-            final ResultSet firstResultSet = firstStatement.executeQuery();
-            while (firstResultSet.next()) {
-
-                final PreparedStatement secondStatement = statementFactory.createStatement(connection,
-                        String.format(InitialPatterns.SHOP_GET_ALL_CARS_BY_PRICE_PATTERN, price));
-
-                final ResultSet secondResultSet = secondStatement.executeQuery();
-
-                while (secondResultSet.next()) {
-                    final Car car = new Car();
-                    car.setShop(secondResultSet.getString(SHOP_NAME));
-                    car.setId(secondResultSet.getInt(CAR_ID));
-                    car.setBrand(secondResultSet.getString(BRAND));
-                    car.setModel(secondResultSet.getString(MODEL));
-                    car.setAgeOfProduce(secondResultSet.getInt(AGE_OF_PRODUCE));
-                    car.setPrice(secondResultSet.getInt(PRICE));
-                    cars.add(car);
-                }
-            }
-        } catch (SQLException e) {
-            System.out.println(GET_VALUES_ERROR_MESSAGE);
-        }
-
-        return cars;
-    }
-
-    @Override
-    public List<Car> readAllByPrice(final int price) {
-        final List<Car> cars = new ArrayList<>();
-        final Connection connection = connectionFactory.createConnection();
         final PreparedStatement statement = statementFactory.createStatement(connection,
-                String.format(InitialPatterns.SHOP_READ_ALL_BY_PRICE_PATTERN, price));
+                String.format(SQLQueries.SHOP_GET_ALL_CARS_BY_PRICE_PATTERN, shopId, price));
 
         try {
             final ResultSet resultSet = statement.executeQuery();
-
             while (resultSet.next()) {
                 final Car car = new Car();
-                car.setShop(resultSet.getString(SHOP_NAME));
                 car.setId(resultSet.getInt(CAR_ID));
                 car.setBrand(resultSet.getString(BRAND));
                 car.setModel(resultSet.getString(MODEL));
@@ -141,7 +91,7 @@ public class ShopDAOImpl implements ShopDAO {
         final CarOwner carOwner = new CarOwner();
         final Connection connection = connectionFactory.createConnection();
         final PreparedStatement statement = statementFactory.createStatement(connection,
-                String.format(InitialPatterns.SHOP_READ_BY_CLIENT_PATTERN, clientId));
+                String.format(SQLQueries.SHOP_READ_BY_CLIENT_PATTERN, clientId));
 
         try {
             final ResultSet resultSet = statement.executeQuery();
@@ -150,7 +100,7 @@ public class ShopDAOImpl implements ShopDAO {
                 carOwner.setId(clientId);
                 carOwner.setName(resultSet.getString(CLIENT_NAME));
                 carOwner.setCity(resultSet.getString(CITY));
-                carOwner.setCar(carDAO.read(resultSet.getInt(CAR_ID)).toString());
+                carOwner.setCar(resultSet.getString("brand") + " " + resultSet.getString("model"));
             }
         } catch (SQLException e) {
             System.out.println(GET_VALUES_ERROR_MESSAGE);
@@ -160,37 +110,10 @@ public class ShopDAOImpl implements ShopDAO {
     }
 
     @Override
-    public List<Car> readAll() {
-        final List<Car> cars = new ArrayList<>();
-        final Connection connection = connectionFactory.createConnection();
-        final PreparedStatement statement = statementFactory.createStatement(connection,
-                InitialPatterns.SHOP_READ_ALL_PATTERN);
-
-        try {
-            final ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                final Car car = new Car();
-                car.setShop(resultSet.getString(SHOP_NAME));
-                car.setId(resultSet.getInt(CAR_ID));
-                car.setBrand(resultSet.getString(BRAND));
-                car.setModel(resultSet.getString(MODEL));
-                car.setAgeOfProduce(resultSet.getInt(AGE_OF_PRODUCE));
-                car.setPrice(resultSet.getInt(PRICE));
-                cars.add(car);
-            }
-        } catch (SQLException e) {
-            System.out.println(GET_VALUES_ERROR_MESSAGE);
-        }
-
-        return cars;
-    }
-
-    @Override
     public void save(final String name) {
         final Connection connection = connectionFactory.createConnection();
         final PreparedStatement statement = statementFactory.createStatement(connection,
-                String.format(InitialPatterns.SHOP_SAVE_LINE_PATTERN, name));
+                String.format(SQLQueries.SHOP_SAVE_LINE_PATTERN, name));
 
         statementFactory.executeStatement(statement);
 
@@ -202,7 +125,7 @@ public class ShopDAOImpl implements ShopDAO {
     public void deleteTable() {
         final Connection connection = connectionFactory.createConnection();
         final PreparedStatement statement = statementFactory.createStatement(connection,
-                InitialPatterns.SHOP_DELETE_TABLE_PATTERN);
+                SQLQueries.SHOP_DELETE_TABLE_PATTERN);
 
         statementFactory.executeStatement(statement);
 
@@ -210,11 +133,11 @@ public class ShopDAOImpl implements ShopDAO {
         statementFactory.closeStatement(statement);
     }
 
-    @Override
+    @Override //---Done, but car is deleted in every table---
     public void delete(final int id) {
         final Connection connection = connectionFactory.createConnection();
         final PreparedStatement statement = statementFactory.createStatement(connection,
-                String.format(InitialPatterns.SHOP_DELETE_LINE_PATTERN, id));
+                String.format(SQLQueries.SHOP_DELETE_LINE_PATTERN, id));
 
         statementFactory.executeStatement(statement);
 
@@ -227,7 +150,7 @@ public class ShopDAOImpl implements ShopDAO {
 
         final Connection connection = connectionFactory.createConnection();
         final PreparedStatement statement = statementFactory.createStatement(connection,
-                InitialPatterns.SHOP_READ_ALL_ID_PATTERN);
+                SQLQueries.SHOP_READ_ALL_ID_PATTERN);
 
         final ResultSet resultSet;
         try {
@@ -244,6 +167,6 @@ public class ShopDAOImpl implements ShopDAO {
 
     @Override
     public void choiceOfId() {
-        System.out.println(CHOICE_OF_ID_PATTERN + InitialPatterns.NEXT_LINE_PATTERN + readAllId());
+        System.out.println(CHOICE_OF_ID_PATTERN + NEXT_LINE_PATTERN + readAllId());
     }
 }

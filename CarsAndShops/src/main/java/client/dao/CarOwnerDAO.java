@@ -1,4 +1,6 @@
-package client;
+package client.dao;
+
+import client.dto.CarOwner;
 
 import java.util.List;
 

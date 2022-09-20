@@ -1,7 +1,7 @@
-package shop;
+package shop.dao;
 
-import car.Car;
-import client.CarOwner;
+import car.dto.Car;
+import client.dto.CarOwner;
 
 import java.util.List;
 
@@ -12,11 +12,7 @@ public interface ShopDAO {
 
     List<Car> getCarsByPrice(final int shopId, final int price);
 
-    List<Car> readAllByPrice(final int price);
-
     CarOwner readByClient(final int clientId);
-
-    List<Car> readAll();
 
     void save(final String name);
 
