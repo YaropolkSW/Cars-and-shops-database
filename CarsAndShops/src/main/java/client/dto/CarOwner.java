@@ -24,6 +24,6 @@ public class CarOwner {
 
     @Override
     public String toString() {
-        return String.format("ID - %d\nName - %s\nCity - %s\nCar - %s\n", id, name, city, car);
+        return String.format("ID - %d\nName - %s\nCity - %s\nCar - %s", id, name, city, car);
     }
 }

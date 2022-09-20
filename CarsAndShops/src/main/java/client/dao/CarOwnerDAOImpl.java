@@ -16,12 +16,14 @@ import java.util.List;
 public class CarOwnerDAOImpl implements CarOwnerDAO {
     private final static String CHOICE_OF_ID_PATTERN = "Пожалуйста, выберите один из приведенных ID: ";
     private final static String GET_VALUES_ERROR_MESSAGE = "Ошибка при получении значений!";
+    private final static String EMPTY_OWNER = "Машиной %s никто не владеет!";
     private final static String NEXT_LINE_PATTERN = "\n";
     private final static String CLIENT_ID = "client_id";
     private final static String CLIENT_NAME = "client_name";
     private final static String CITY = "city";
     private final static String BRAND = "brand";
     private final static String MODEL = "model";
+    private final static String SPACE = " ";
 
     private final ConnectionFactory connectionFactory = new ConnectionFactory();
     private final StatementFactory statementFactory = new StatementFactory();
@@ -45,7 +47,7 @@ public class CarOwnerDAOImpl implements CarOwnerDAO {
                 carOwner.setId(id);
                 carOwner.setName(resultSet.getString(CLIENT_NAME));
                 carOwner.setCity(resultSet.getString(CITY));
-                carOwner.setCar(resultSet.getString(BRAND) + " " + resultSet.getString(MODEL));
+                carOwner.setCar(resultSet.getString(BRAND) + SPACE + resultSet.getString(MODEL));
             }
         } catch (SQLException e) {
             System.out.println(GET_VALUES_ERROR_MESSAGE);
@@ -55,6 +57,35 @@ public class CarOwnerDAOImpl implements CarOwnerDAO {
         statementFactory.closeStatement(statement);
 
         return carOwner;
+    }
+
+    @Override
+    public String readByCar(final int id) {
+        final CarOwner carOwner = new CarOwner();
+
+        final Connection connection = connectionFactory.createConnection();
+        final PreparedStatement statement = statementFactory.createStatement(connection,
+                String.format(SQLQueries.OWNER_READ_BY_CAR_PATTERN, id));
+
+        try {
+            final ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                final int clientId = resultSet.getInt(CLIENT_ID);
+
+                if (clientId > 0) {
+                    carOwner.setId(clientId);
+                    carOwner.setName(resultSet.getString(CLIENT_NAME));
+                    carOwner.setCity(resultSet.getString(CITY));
+                    carOwner.setCar(resultSet.getString(BRAND) + SPACE + resultSet.getString(MODEL));
+                } else {
+                    return String.format(EMPTY_OWNER, (resultSet.getString(BRAND) + SPACE + resultSet.getString(MODEL)));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(GET_VALUES_ERROR_MESSAGE);
+        }
+
+        return carOwner.toString();
     }
 
     @Override
@@ -72,7 +103,7 @@ public class CarOwnerDAOImpl implements CarOwnerDAO {
                 carOwner.setId(resultSet.getInt(CLIENT_ID));
                 carOwner.setName(resultSet.getString(CLIENT_NAME));
                 carOwner.setCity(resultSet.getString(CITY));
-                carOwner.setCar(resultSet.getString(BRAND) + " " + resultSet.getString(MODEL));
+                carOwner.setCar(resultSet.getString(BRAND) + SPACE + resultSet.getString(MODEL));
                 carOwners.add(carOwner);
             }
         } catch (SQLException e) {

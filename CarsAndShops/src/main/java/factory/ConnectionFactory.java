@@ -16,7 +16,6 @@ public class ConnectionFactory {
     private final static String USER = "user";
     private final static String PASSWORD = "password";
 
-
     public Connection createConnection() {
         Connection connection = null;
         final Properties properties = new Properties();

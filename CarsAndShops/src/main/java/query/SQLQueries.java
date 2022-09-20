@@ -18,6 +18,7 @@ public class SQLQueries {
     public final static String SHOP_DELETE_LINE_PATTERN;
 
     public final static String OWNER_READ_LINE_PATTERN;
+    public final static String OWNER_READ_BY_CAR_PATTERN;
     public final static String OWNER_READ_ALL_LINES_PATTERN;
     public final static String OWNER_READ_ALL_ID_PATTERN;
     public final static String OWNER_SAVE_LINE_PATTERN;
@@ -46,10 +47,11 @@ public class SQLQueries {
         SHOP_READ_BY_CLIENT_PATTERN = properties.getProperty("shopReadByClient");
         SHOP_SAVE_LINE_PATTERN = properties.getProperty("shopSaveLine");
         SHOP_DELETE_TABLE_PATTERN = properties.getProperty("shopDeleteTable");
-        SHOP_DELETE_LINE_PATTERN = properties.getProperty("shopDeleteLine"); //---Done, but car is deleted in every table---
+        SHOP_DELETE_LINE_PATTERN = properties.getProperty("shopDeleteLine");
         SHOP_READ_ALL_ID_PATTERN = properties.getProperty("shopReadAllId");
 
         OWNER_READ_LINE_PATTERN = properties.getProperty("ownerReadLine");
+        OWNER_READ_BY_CAR_PATTERN = properties.getProperty("ownerReadByCar");
         OWNER_READ_ALL_LINES_PATTERN = properties.getProperty("ownerReadAllLines");
         OWNER_SAVE_LINE_PATTERN = properties.getProperty("ownerSaveLine");
         OWNER_DELETE_TABLE_PATTERN = properties.getProperty("ownerDeleteTable");

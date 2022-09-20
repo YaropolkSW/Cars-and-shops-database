@@ -12,13 +12,14 @@ import java.util.Scanner;
 public class Migration {
     private final static String PATH_TO_SQL_FILE = "src/main/resources/initialMigration.sql";
     private final static String ERROR_WHILE_READING_FILE_MESSAGE = "Ошибка во время чтения файла!";
+    private final static String NEXT_LINE_PATTERN = "\n";
 
     public void initialMigration() {
         final StringBuilder builder = new StringBuilder();
 
         try (final Scanner scanner = new Scanner(new File(PATH_TO_SQL_FILE))) {
             while (scanner.hasNextLine()) {
-                builder.append(scanner.nextLine()).append("\n");
+                builder.append(scanner.nextLine()).append(NEXT_LINE_PATTERN);
             }
         } catch (IOException e) {
             System.out.println(ERROR_WHILE_READING_FILE_MESSAGE);

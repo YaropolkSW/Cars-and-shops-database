@@ -29,7 +29,7 @@ public class Car {
 
     @Override
     public String toString() {
-        return String.format("ID - %d\nBrand - %s\nModel - %s\nAge of produce - %d\nPrice - %d\n",
+        return String.format("ID - %d\nBrand - %s\nModel - %s\nAge of produce - %d\nPrice - %d",
                 id, brand, model, ageOfProduce, price);
     }
 }

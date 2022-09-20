@@ -9,6 +9,8 @@ public interface CarOwnerDAO {
 
     CarOwner read(final int id);
 
+    String readByCar(final int id);
+
     List<CarOwner> readAll();
 
     void save(final String name, final String city, final int carId);

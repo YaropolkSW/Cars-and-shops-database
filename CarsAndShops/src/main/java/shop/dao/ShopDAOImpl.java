@@ -19,7 +19,6 @@ public class ShopDAOImpl implements ShopDAO {
     private final static String GET_VALUES_ERROR_MESSAGE = "Ошибка при получении значений!";
     private final static String NEXT_LINE_PATTERN = "\n";
     private final static String SHOP_ID = "shop_id";
-    private final static String SHOP_NAME = "shop_name";
     private final static String CAR_ID = "car_id";
     private final static String BRAND = "brand";
     private final static String MODEL = "model";
@@ -27,6 +26,7 @@ public class ShopDAOImpl implements ShopDAO {
     private final static String PRICE = "price";
     private final static String CLIENT_NAME = "client_name";
     private final static String CITY = "city";
+    private final static String SPACE = " ";
 
     private final ConnectionFactory connectionFactory = new ConnectionFactory();
     private final StatementFactory statementFactory = new StatementFactory();
@@ -100,7 +100,7 @@ public class ShopDAOImpl implements ShopDAO {
                 carOwner.setId(clientId);
                 carOwner.setName(resultSet.getString(CLIENT_NAME));
                 carOwner.setCity(resultSet.getString(CITY));
-                carOwner.setCar(resultSet.getString("brand") + " " + resultSet.getString("model"));
+                carOwner.setCar(resultSet.getString(BRAND) + SPACE + resultSet.getString(MODEL));
             }
         } catch (SQLException e) {
             System.out.println(GET_VALUES_ERROR_MESSAGE);
@@ -133,7 +133,7 @@ public class ShopDAOImpl implements ShopDAO {
         statementFactory.closeStatement(statement);
     }
 
-    @Override //---Done, but car is deleted in every table---
+    @Override
     public void delete(final int id) {
         final Connection connection = connectionFactory.createConnection();
         final PreparedStatement statement = statementFactory.createStatement(connection,

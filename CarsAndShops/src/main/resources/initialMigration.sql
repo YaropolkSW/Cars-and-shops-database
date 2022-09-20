@@ -37,8 +37,8 @@ CREATE TABLE client(
     client_id SERIAL PRIMARY KEY,
     client_name VARCHAR(20) NOT NULL,
     city VARCHAR(20) NOT NULL,
-    car_id INT NOT NULL,
-    FOREIGN KEY (car_id) REFERENCES car (car_id) ON DELETE CASCADE
+    car_id INT,
+    FOREIGN KEY (car_id) REFERENCES car (car_id)
 );
 
 INSERT INTO client(client_name, city, car_id)
@@ -51,9 +51,9 @@ DROP TABLE IF EXISTS shop_car;
 
 CREATE TABLE shop_car(
     shop_id INT NOT NULL,
-    car_id INT NOT NULL,
-    FOREIGN KEY (shop_id) REFERENCES shop (shop_id) ON DELETE CASCADE,
-    FOREIGN KEY (car_id) REFERENCES car (car_id) ON DELETE CASCADE
+    car_id INT,
+    FOREIGN KEY (shop_id) REFERENCES shop (shop_id),
+    FOREIGN KEY (car_id) REFERENCES car (car_id)
 );
 
 INSERT INTO shop_car(shop_id, car_id)
