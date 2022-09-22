@@ -5,8 +5,6 @@ import car.dto.Car;
 import java.util.List;
 
 public interface CarDAO {
-    void createTable();
-
     Car read(final int id);
 
     List<Car> readAll();

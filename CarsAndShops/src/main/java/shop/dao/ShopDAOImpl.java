@@ -2,9 +2,11 @@ package shop.dao;
 
 import car.dto.Car;
 import client.dto.CarOwner;
-import dao.Migration;
 import factory.ConnectionFactory;
 import factory.StatementFactory;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import query.SQLQueries;
 
 import java.sql.Connection;
@@ -14,10 +16,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ShopDAOImpl implements ShopDAO {
     private final static String CHOICE_OF_ID_PATTERN = "Пожалуйста, выберите один из приведенных ID: ";
     private final static String GET_VALUES_ERROR_MESSAGE = "Ошибка при получении значений!";
     private final static String NEXT_LINE_PATTERN = "\n";
+    private final static String SHOP_NAME = "shop_name";
     private final static String SHOP_ID = "shop_id";
     private final static String CAR_ID = "car_id";
     private final static String BRAND = "brand";
@@ -28,12 +33,27 @@ public class ShopDAOImpl implements ShopDAO {
     private final static String CITY = "city";
     private final static String SPACE = " ";
 
-    private final ConnectionFactory connectionFactory = new ConnectionFactory();
-    private final StatementFactory statementFactory = new StatementFactory();
+    ConnectionFactory connectionFactory;
+    StatementFactory statementFactory;
 
     @Override
-    public void createTable() {
-        new Migration().initialMigration();
+    public List<String> getAllShops() {
+        final List<String> shops = new ArrayList<>();
+
+        final Connection connection = connectionFactory.createConnection();
+        final PreparedStatement statement = statementFactory.createStatement(connection, SQLQueries.SHOP_GET_ALL_PATTERN);
+
+        try {
+            final ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                shops.add(resultSet.getString(SHOP_NAME));
+            }
+        } catch (SQLException e) {
+            System.out.println(GET_VALUES_ERROR_MESSAGE);
+        }
+
+        return shops;
     }
 
     @Override

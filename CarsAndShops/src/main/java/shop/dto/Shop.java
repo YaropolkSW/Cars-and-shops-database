@@ -1,17 +1,16 @@
 package shop.dto;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
+
+@Getter
+@Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Shop {
-    private int id;
-    private String name;
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    int id;
+    String name;
     public String toString() {
         return String.format("ID - %d\nName - %s", id, name);
     }

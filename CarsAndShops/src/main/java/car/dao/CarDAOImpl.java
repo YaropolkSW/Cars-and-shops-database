@@ -1,9 +1,11 @@
 package car.dao;
 
 import car.dto.Car;
-import dao.Migration;
 import factory.ConnectionFactory;
 import factory.StatementFactory;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import query.SQLQueries;
 
 import java.sql.Connection;
@@ -13,6 +15,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class CarDAOImpl implements CarDAO {
     private final static String CHOICE_OF_ID_PATTERN = "Пожалуйста, выберите один из приведенных ID: ";
     private final static String GET_VALUES_ERROR_MESSAGE = "Ошибка при получении значений!";
@@ -23,13 +27,8 @@ public class CarDAOImpl implements CarDAO {
     private final static String AGE_OF_PRODUCE = "age_of_produce";
     private final static String PRICE = "price";
 
-    private final ConnectionFactory connectionFactory = new ConnectionFactory();
-    private final StatementFactory statementFactory = new StatementFactory();
-
-    @Override
-    public void createTable() {
-        new Migration().initialMigration();
-    }
+    ConnectionFactory connectionFactory;
+    StatementFactory statementFactory;
 
     @Override
     public Car read(final int id) {

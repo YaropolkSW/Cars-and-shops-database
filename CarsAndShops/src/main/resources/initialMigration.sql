@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS shop CASCADE;
 
-CREATE TABLE shop(
+CREATE TABLE IF NOT EXISTS shop(
     shop_id SERIAL PRIMARY KEY,
     shop_name VARCHAR(50) NOT NULL
 );
@@ -13,7 +13,7 @@ VALUES('Subaru Official Dealer'),
 
 DROP TABLE IF EXISTS car CASCADE;
 
-CREATE TABLE car(
+CREATE TABLE IF NOT EXISTS car(
     car_id SERIAL PRIMARY KEY,
     brand VARCHAR(15) NOT NULL,
     model VARCHAR(15) NOT NULL,
@@ -33,7 +33,7 @@ VALUES('Subaru', 'Outback', 2022, 6000000),
 
 DROP TABLE IF EXISTS client;
 
-CREATE TABLE client(
+CREATE TABLE IF NOT EXISTS client(
     client_id SERIAL PRIMARY KEY,
     client_name VARCHAR(20) NOT NULL,
     city VARCHAR(20) NOT NULL,
@@ -49,7 +49,7 @@ VALUES('Василий Ф.И.', 'Москва', 1),
 
 DROP TABLE IF EXISTS shop_car;
 
-CREATE TABLE shop_car(
+CREATE TABLE IF NOT EXISTS shop_car(
     shop_id INT NOT NULL,
     car_id INT,
     FOREIGN KEY (shop_id) REFERENCES shop (shop_id),

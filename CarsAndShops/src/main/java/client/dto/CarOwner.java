@@ -1,26 +1,16 @@
 package client.dto;
 
+import lombok.AccessLevel;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
+
+@Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CarOwner {
-    private int id;
-    private String name;
-    private String city;
-    private String car;
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public void setCar(String car) {
-        this.car = car;
-    }
+    int id;
+    String name;
+    String city;
+    String car;
 
     @Override
     public String toString() {

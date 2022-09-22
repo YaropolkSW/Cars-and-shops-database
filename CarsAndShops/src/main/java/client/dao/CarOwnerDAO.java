@@ -5,8 +5,6 @@ import client.dto.CarOwner;
 import java.util.List;
 
 public interface CarOwnerDAO {
-    void createTable();
-
     CarOwner read(final int id);
 
     String readByCar(final int id);

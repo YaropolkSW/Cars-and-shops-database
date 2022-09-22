@@ -8,6 +8,7 @@ public class SQLQueries {
     private final static String PATH_TO_PROPERTIES = "src/main/resources/databasePatterns.properties";
     private final static String FILE_NOT_FOUND_ERROR_MESSAGE = "Файл не найден!";
 
+    public final static String SHOP_GET_ALL_PATTERN;
     public final static String SHOP_READ_BY_CLIENT_PATTERN;
     public final static String CAR_READ_ALL_BY_PRICE_PATTERN;
     public final static String SHOP_GET_ALL_CARS_PATTERN;
@@ -42,6 +43,7 @@ public class SQLQueries {
             System.out.println(FILE_NOT_FOUND_ERROR_MESSAGE);
         }
 
+        SHOP_GET_ALL_PATTERN = properties.getProperty("shopGetAll");
         SHOP_GET_ALL_CARS_PATTERN = properties.getProperty("shopGetAllCars");
         SHOP_GET_ALL_CARS_BY_PRICE_PATTERN = properties.getProperty("shopGetAllCarsByPrice");
         SHOP_READ_BY_CLIENT_PATTERN = properties.getProperty("shopReadByClient");

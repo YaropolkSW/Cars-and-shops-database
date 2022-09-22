@@ -6,7 +6,7 @@ import client.dto.CarOwner;
 import java.util.List;
 
 public interface ShopDAO {
-    void createTable();
+    List<String> getAllShops();
 
     List<Car> getAllCars(final int shopId);
 

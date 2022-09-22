@@ -3,31 +3,33 @@ package ui;
 import car.dto.Car;
 import choice.ChoiceOfOperation;
 import client.dao.CarOwnerDAOImpl;
+import dao.Migration;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import shop.dao.ShopDAOImpl;
 
 import java.util.List;
 import java.util.Scanner;
 
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserInterface {
     private final static String INCORRECT_REQUEST = "Неверный запрос!";
-    private final static String ENTER_MAX_PRICE_MESSAGE = "Введите максимальную цену: ";
+    private final static String REQUEST_NUMBER_OF_SHOP = "Введите номер магазина для просмотра машин: ";
+    private final static String REQUEST_MAX_PRICE_MESSAGE = "Введите максимальную цену: ";
     private final static String REQUEST_CAR_ID = "Введите id машины: ";
-    private final static String CHOICE_OF_SHOP = "1 - Subaru Official Dealer\n" +
-                                                 "2 - Chevrolet Official Dealer\n" +
-                                                 "3 - Kia Official Dealer\n" +
-                                                 "4 - Trade-In Dealer\n" +
-                                                 "Введите номер магазина для просмотра машин: ";
+    private final static String DASH_PATTERN = " - ";
+    private final static String NEXT_LINE_PATTERN = "\n";
 
-    private final Scanner scanner = new Scanner(System.in);
-    private final ShopDAOImpl shopDAO = new ShopDAOImpl();
-    private final CarOwnerDAOImpl carOwnerDAO = new CarOwnerDAOImpl();
-    private final Printer printer = new Printer();
-
-    private int shopNumber = 0;
-    private List<Car> cars;
+    Scanner scanner;
+    ShopDAOImpl shopDAO;
+    CarOwnerDAOImpl carOwnerDAO;
+    Migration migration;
+    Printer printer = new Printer();
 
     public boolean showUserInterface() {
-        shopDAO.createTable();
+        migration.initialMigration();
         printer.printMessage();
 
         final ChoiceOfOperation operation;
@@ -54,6 +56,7 @@ public class UserInterface {
                 return true;
 
             case EXIT:
+                scanner.close();
                 return false;
 
             default:
@@ -63,7 +66,9 @@ public class UserInterface {
     }
 
     private void readInShop() {
-        System.out.print(CHOICE_OF_SHOP);
+        final List<Car> cars;
+        final int shopNumber;
+        System.out.print(choiceOfShop());
 
         try {
             shopNumber = Integer.parseInt(scanner.nextLine());
@@ -82,9 +87,11 @@ public class UserInterface {
     }
 
     private void readInShopByPrice() {
-        int maxPrice = 0;
+        final List<Car> cars;
+        final int shopNumber;
+        int maxPrice;
 
-        System.out.print(CHOICE_OF_SHOP);
+        System.out.print(choiceOfShop());
 
         try {
             shopNumber = Integer.parseInt(scanner.nextLine());
@@ -93,7 +100,7 @@ public class UserInterface {
             return;
         }
 
-        System.out.print(ENTER_MAX_PRICE_MESSAGE);
+        System.out.print(REQUEST_MAX_PRICE_MESSAGE);
 
         try {
             maxPrice = Integer.parseInt(scanner.nextLine());
@@ -112,7 +119,7 @@ public class UserInterface {
     }
 
     private void readOwnerByCar() {
-        int carId = 0;
+        int carId;
 
         System.out.print(REQUEST_CAR_ID);
 
@@ -128,5 +135,22 @@ public class UserInterface {
         printer.printSeparator();
         System.out.println(carOwner);
         printer.printSeparator();
+    }
+
+    private String choiceOfShop() {
+        int numberOfChoice = 1;
+        final StringBuilder builderOfMessage = new StringBuilder();
+        List<String> shops = shopDAO.getAllShops();
+
+        for (String shop : shops) {
+            if (numberOfChoice != shops.size()) {
+                builderOfMessage.append(numberOfChoice + DASH_PATTERN + shop + NEXT_LINE_PATTERN);
+            } else {
+                builderOfMessage.append(numberOfChoice + DASH_PATTERN + shop + NEXT_LINE_PATTERN + REQUEST_NUMBER_OF_SHOP);
+            }
+            numberOfChoice++;
+        }
+
+        return builderOfMessage.toString();
     }
 }

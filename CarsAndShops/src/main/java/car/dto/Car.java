@@ -1,31 +1,17 @@
 package car.dto;
 
+import lombok.AccessLevel;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
+
+@Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Car {
-    private int id;
-    private String brand;
-    private String model;
-    private int ageOfProduce;
-    private int price;
-
-    public void setId(final int id) {
-        this.id = id;
-    }
-
-    public void setBrand(final String brand) {
-        this.brand = brand;
-    }
-
-    public void setModel(final String model) {
-        this.model = model;
-    }
-
-    public void setAgeOfProduce(final int ageOfProduce) {
-        this.ageOfProduce = ageOfProduce;
-    }
-
-    public void setPrice(final int price) {
-        this.price = price;
-    }
+    int id;
+    String brand;
+    String model;
+    int ageOfProduce;
+    int price;
 
     @Override
     public String toString() {
