@@ -1,16 +1,17 @@
 package client.dto;
 
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Setter;
-import lombok.experimental.FieldDefaults;
 
 @Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@EqualsAndHashCode
 public class CarOwner {
-    int id;
-    String name;
-    String city;
-    String car;
+    private int id;
+    private String name;
+    private String city;
+    private String car;
 
     @Override
     public String toString() {

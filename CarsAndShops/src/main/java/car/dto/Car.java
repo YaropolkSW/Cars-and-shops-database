@@ -1,17 +1,18 @@
 package car.dto;
 
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Setter;
-import lombok.experimental.FieldDefaults;
 
 @Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@EqualsAndHashCode
 public class Car {
-    int id;
-    String brand;
-    String model;
-    int ageOfProduce;
-    int price;
+    private int id;
+    private String brand;
+    private String model;
+    private int ageOfProduce;
+    private int price;
 
     @Override
     public String toString() {

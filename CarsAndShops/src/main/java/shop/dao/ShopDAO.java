@@ -20,5 +20,5 @@ public interface ShopDAO {
 
     void delete(final int id);
 
-    void choiceOfId();
+    String choiceOfId();
 }

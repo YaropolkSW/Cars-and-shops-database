@@ -1,30 +1,31 @@
+import car.dao.CarDAOImpl;
 import client.dao.CarOwnerDAOImpl;
 import dao.Migration;
 import factory.ConnectionFactory;
 import factory.StatementFactory;
 import lombok.Cleanup;
-import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
 import shop.dao.ShopDAOImpl;
+import ui.Printer;
 import ui.UserInterface;
 
 import java.util.Scanner;
 
-@FieldDefaults(makeFinal = true)
 public class Main {
     public static void main(String[] args) {
-        ConnectionFactory connectionFactory = new ConnectionFactory();
-        StatementFactory statementFactory = new StatementFactory();
+        final ConnectionFactory connectionFactory = new ConnectionFactory();
+        final StatementFactory statementFactory = new StatementFactory();
 
         @Cleanup
-        Scanner scanner = new Scanner(System.in);
-        ShopDAOImpl shopDAO = new ShopDAOImpl(connectionFactory, statementFactory);
-        CarOwnerDAOImpl carOwnerDAO = new CarOwnerDAOImpl(connectionFactory, statementFactory);
-        Migration migration = new Migration(connectionFactory, statementFactory);
+        final Scanner scanner = new Scanner(System.in);
+        final CarDAOImpl carDAO = new CarDAOImpl(connectionFactory, statementFactory);
+        final ShopDAOImpl shopDAO = new ShopDAOImpl(connectionFactory, statementFactory);
+        final CarOwnerDAOImpl carOwnerDAO = new CarOwnerDAOImpl(connectionFactory, statementFactory);
+        final Migration migration = new Migration(connectionFactory, statementFactory);
+        final Printer printer = new Printer();
 
-        UserInterface userInterface = new UserInterface(scanner, shopDAO, carOwnerDAO, migration);
+        final UserInterface userInterface = new UserInterface(scanner, carDAO, shopDAO, carOwnerDAO, migration, printer);
 
-        @NonFinal boolean isContinue = true;
+        boolean isContinue = true;
 
         while (isContinue) {
             isContinue = userInterface.showUserInterface();

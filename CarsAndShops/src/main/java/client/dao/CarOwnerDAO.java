@@ -17,5 +17,5 @@ public interface CarOwnerDAO {
 
     void delete(final int id);
 
-    void choiceOfId();
+    String choiceOfId();
 }

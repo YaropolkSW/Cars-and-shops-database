@@ -19,5 +19,5 @@ public interface CarDAO {
 
     void delete(final int id);
 
-    void choiceOfId();
+    String choiceOfId();
 }

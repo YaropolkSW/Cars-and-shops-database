@@ -3,9 +3,7 @@ package car.dao;
 import car.dto.Car;
 import factory.ConnectionFactory;
 import factory.StatementFactory;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import query.SQLQueries;
 
 import java.sql.Connection;
@@ -16,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class CarDAOImpl implements CarDAO {
     private final static String CHOICE_OF_ID_PATTERN = "Пожалуйста, выберите один из приведенных ID: ";
     private final static String GET_VALUES_ERROR_MESSAGE = "Ошибка при получении значений!";
@@ -27,12 +24,12 @@ public class CarDAOImpl implements CarDAO {
     private final static String AGE_OF_PRODUCE = "age_of_produce";
     private final static String PRICE = "price";
 
-    ConnectionFactory connectionFactory;
-    StatementFactory statementFactory;
+    private final ConnectionFactory connectionFactory;
+    private final StatementFactory statementFactory;
 
     @Override
     public Car read(final int id) {
-        final Car car = new Car();
+        Car car = null;
 
         final Connection connection = connectionFactory.createConnection();
         final PreparedStatement statement = statementFactory.createStatement(connection,
@@ -41,11 +38,11 @@ public class CarDAOImpl implements CarDAO {
         try {
             final ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                car.setId(id);
-                car.setBrand(resultSet.getString(BRAND));
-                car.setModel(resultSet.getString(MODEL));
-                car.setAgeOfProduce(resultSet.getInt(AGE_OF_PRODUCE));
-                car.setPrice(resultSet.getInt(PRICE));
+                final String brand = resultSet.getString(BRAND);
+                final String model = resultSet.getString(MODEL);
+                final int ageOfProduce = resultSet.getInt(AGE_OF_PRODUCE);
+                final int price = resultSet.getInt(PRICE);
+                car = new Car(id, brand, model, ageOfProduce, price);
             }
         } catch (SQLException e) {
             System.out.println(GET_VALUES_ERROR_MESSAGE);
@@ -68,13 +65,12 @@ public class CarDAOImpl implements CarDAO {
         try {
             final ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                final Car car = new Car();
-                car.setId(resultSet.getInt(CAR_ID));
-                car.setBrand(resultSet.getString(BRAND));
-                car.setModel(resultSet.getString(MODEL));
-                car.setAgeOfProduce(resultSet.getInt(AGE_OF_PRODUCE));
-                car.setPrice(resultSet.getInt(PRICE));
-                cars.add(car);
+                final int id = resultSet.getInt(CAR_ID);
+                final String brand = resultSet.getString(BRAND);
+                final String model = resultSet.getString(MODEL);
+                final int ageOfProduce = resultSet.getInt(AGE_OF_PRODUCE);
+                final int price = resultSet.getInt(PRICE);
+                cars.add(new Car(id, brand, model, ageOfProduce, price));
             }
         } catch (SQLException e) {
             System.out.println(GET_VALUES_ERROR_MESSAGE);
@@ -87,23 +83,22 @@ public class CarDAOImpl implements CarDAO {
     }
 
     @Override
-    public List<Car> readAllByPrice(final int price) {
+    public List<Car> readAllByPrice(final int maxPrice) {
         final List<Car> cars = new ArrayList<>();
         final Connection connection = connectionFactory.createConnection();
         final PreparedStatement statement = statementFactory.createStatement(connection,
-                String.format(SQLQueries.CAR_READ_ALL_BY_PRICE_PATTERN, price));
+                String.format(SQLQueries.CAR_READ_ALL_BY_PRICE_PATTERN, maxPrice));
 
         try {
             final ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                final Car car = new Car();
-                car.setId(resultSet.getInt(CAR_ID));
-                car.setBrand(resultSet.getString(BRAND));
-                car.setModel(resultSet.getString(MODEL));
-                car.setAgeOfProduce(resultSet.getInt(AGE_OF_PRODUCE));
-                car.setPrice(resultSet.getInt(PRICE));
-                cars.add(car);
+                final int id = resultSet.getInt(CAR_ID);
+                final String brand = resultSet.getString(BRAND);
+                final String model = resultSet.getString(MODEL);
+                final int ageOfProduce = resultSet.getInt(AGE_OF_PRODUCE);
+                final int price = resultSet.getInt(PRICE);
+                cars.add(new Car(id, brand, model, ageOfProduce, price));
             }
         } catch (SQLException e) {
             System.out.println(GET_VALUES_ERROR_MESSAGE);
@@ -180,7 +175,7 @@ public class CarDAOImpl implements CarDAO {
     }
 
     @Override
-    public void choiceOfId() {
-        System.out.println(CHOICE_OF_ID_PATTERN + NEXT_LINE_PATTERN + readAllId());
+    public String choiceOfId() {
+        return (CHOICE_OF_ID_PATTERN + NEXT_LINE_PATTERN + readAllId());
     }
 }

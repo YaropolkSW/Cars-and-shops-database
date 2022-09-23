@@ -1,19 +1,17 @@
 package ui;
 
+import car.dao.CarDAOImpl;
 import car.dto.Car;
 import choice.ChoiceOfOperation;
 import client.dao.CarOwnerDAOImpl;
 import dao.Migration;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import shop.dao.ShopDAOImpl;
 
 import java.util.List;
 import java.util.Scanner;
 
 @RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserInterface {
     private final static String INCORRECT_REQUEST = "Неверный запрос!";
     private final static String REQUEST_NUMBER_OF_SHOP = "Введите номер магазина для просмотра машин: ";
@@ -22,11 +20,12 @@ public class UserInterface {
     private final static String DASH_PATTERN = " - ";
     private final static String NEXT_LINE_PATTERN = "\n";
 
-    Scanner scanner;
-    ShopDAOImpl shopDAO;
-    CarOwnerDAOImpl carOwnerDAO;
-    Migration migration;
-    Printer printer = new Printer();
+    private final Scanner scanner;
+    private final CarDAOImpl carDAO;
+    private final ShopDAOImpl shopDAO;
+    private final CarOwnerDAOImpl carOwnerDAO;
+    private final Migration migration;
+    private final Printer printer;
 
     public boolean showUserInterface() {
         migration.initialMigration();
@@ -121,6 +120,7 @@ public class UserInterface {
     private void readOwnerByCar() {
         int carId;
 
+        System.out.println(carDAO.choiceOfId());
         System.out.print(REQUEST_CAR_ID);
 
         try {
@@ -144,9 +144,13 @@ public class UserInterface {
 
         for (String shop : shops) {
             if (numberOfChoice != shops.size()) {
-                builderOfMessage.append(numberOfChoice + DASH_PATTERN + shop + NEXT_LINE_PATTERN);
+                builderOfMessage.append(numberOfChoice).append(DASH_PATTERN).append(shop).append(NEXT_LINE_PATTERN);
             } else {
-                builderOfMessage.append(numberOfChoice + DASH_PATTERN + shop + NEXT_LINE_PATTERN + REQUEST_NUMBER_OF_SHOP);
+                builderOfMessage.append(numberOfChoice)
+                                .append(DASH_PATTERN)
+                                .append(shop)
+                                .append(NEXT_LINE_PATTERN)
+                                .append(REQUEST_NUMBER_OF_SHOP);
             }
             numberOfChoice++;
         }

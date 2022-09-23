@@ -11,8 +11,8 @@ import java.sql.PreparedStatement;
 import java.util.Scanner;
 
 @RequiredArgsConstructor
-public class Migration {
-    private final static String PATH_TO_SQL_FILE = "src/main/resources/initialMigration.sql";
+public class MigrationForTest {
+    private final static String PATH_TO_SQL_FILE = "src/test/resources/initialMigrationForTest.sql";
     private final static String ERROR_WHILE_READING_FILE_MESSAGE = "Ошибка во время чтения файла!";
     private final static String NEXT_LINE_PATTERN = "\n";
 

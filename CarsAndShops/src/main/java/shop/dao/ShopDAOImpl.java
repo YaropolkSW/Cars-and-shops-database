@@ -4,9 +4,7 @@ import car.dto.Car;
 import client.dto.CarOwner;
 import factory.ConnectionFactory;
 import factory.StatementFactory;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import query.SQLQueries;
 
 import java.sql.Connection;
@@ -17,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ShopDAOImpl implements ShopDAO {
     private final static String CHOICE_OF_ID_PATTERN = "Пожалуйста, выберите один из приведенных ID: ";
     private final static String GET_VALUES_ERROR_MESSAGE = "Ошибка при получении значений!";
@@ -33,8 +30,8 @@ public class ShopDAOImpl implements ShopDAO {
     private final static String CITY = "city";
     private final static String SPACE = " ";
 
-    ConnectionFactory connectionFactory;
-    StatementFactory statementFactory;
+    private final ConnectionFactory connectionFactory;
+    private final StatementFactory statementFactory;
 
     @Override
     public List<String> getAllShops() {
@@ -66,13 +63,12 @@ public class ShopDAOImpl implements ShopDAO {
         try {
             final ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                final Car car = new Car();
-                car.setId(resultSet.getInt(CAR_ID));
-                car.setBrand(resultSet.getString(BRAND));
-                car.setModel(resultSet.getString(MODEL));
-                car.setAgeOfProduce(resultSet.getInt(AGE_OF_PRODUCE));
-                car.setPrice(resultSet.getInt(PRICE));
-                cars.add(car);
+                final int carId = resultSet.getInt(CAR_ID);
+                final String brand = resultSet.getString(BRAND);
+                final String model = resultSet.getString(MODEL);
+                final int ageOfProduce = resultSet.getInt(AGE_OF_PRODUCE);
+                final int price = resultSet.getInt(PRICE);
+                cars.add(new Car(carId, brand, model, ageOfProduce, price));
             }
         } catch (SQLException e) {
             System.out.println(GET_VALUES_ERROR_MESSAGE);
@@ -82,22 +78,21 @@ public class ShopDAOImpl implements ShopDAO {
     }
 
     @Override
-    public List<Car> getCarsByPrice(final int shopId, final int price) {
+    public List<Car> getCarsByPrice(final int shopId, final int maxPrice) {
         final List<Car> cars = new ArrayList<>();
         final Connection connection = connectionFactory.createConnection();
         final PreparedStatement statement = statementFactory.createStatement(connection,
-                String.format(SQLQueries.SHOP_GET_ALL_CARS_BY_PRICE_PATTERN, shopId, price));
+                String.format(SQLQueries.SHOP_GET_ALL_CARS_BY_PRICE_PATTERN, shopId, maxPrice));
 
         try {
             final ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                final Car car = new Car();
-                car.setId(resultSet.getInt(CAR_ID));
-                car.setBrand(resultSet.getString(BRAND));
-                car.setModel(resultSet.getString(MODEL));
-                car.setAgeOfProduce(resultSet.getInt(AGE_OF_PRODUCE));
-                car.setPrice(resultSet.getInt(PRICE));
-                cars.add(car);
+                final int carId = resultSet.getInt(CAR_ID);
+                final String brand = resultSet.getString(BRAND);
+                final String model = resultSet.getString(MODEL);
+                final int ageOfProduce = resultSet.getInt(AGE_OF_PRODUCE);
+                final int price = resultSet.getInt(PRICE);
+                cars.add(new Car(carId, brand, model, ageOfProduce, price));
             }
         } catch (SQLException e) {
             System.out.println(GET_VALUES_ERROR_MESSAGE);
@@ -108,7 +103,7 @@ public class ShopDAOImpl implements ShopDAO {
 
     @Override
     public CarOwner readByClient(final int clientId) {
-        final CarOwner carOwner = new CarOwner();
+        CarOwner carOwner = null;
         final Connection connection = connectionFactory.createConnection();
         final PreparedStatement statement = statementFactory.createStatement(connection,
                 String.format(SQLQueries.SHOP_READ_BY_CLIENT_PATTERN, clientId));
@@ -117,10 +112,10 @@ public class ShopDAOImpl implements ShopDAO {
             final ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                carOwner.setId(clientId);
-                carOwner.setName(resultSet.getString(CLIENT_NAME));
-                carOwner.setCity(resultSet.getString(CITY));
-                carOwner.setCar(resultSet.getString(BRAND) + SPACE + resultSet.getString(MODEL));
+                final String clientName = resultSet.getString(CLIENT_NAME);
+                final String clientCity = resultSet.getString(CITY);
+                final String car = resultSet.getString(BRAND) + SPACE + resultSet.getString(MODEL);
+                carOwner = new CarOwner(clientId, clientName, clientCity, car);
             }
         } catch (SQLException e) {
             System.out.println(GET_VALUES_ERROR_MESSAGE);
@@ -186,7 +181,7 @@ public class ShopDAOImpl implements ShopDAO {
     }
 
     @Override
-    public void choiceOfId() {
-        System.out.println(CHOICE_OF_ID_PATTERN + NEXT_LINE_PATTERN + readAllId());
+    public String choiceOfId() {
+        return (CHOICE_OF_ID_PATTERN + NEXT_LINE_PATTERN + readAllId());
     }
 }

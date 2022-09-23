@@ -1,16 +1,15 @@
 package shop.dto;
 
-import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@EqualsAndHashCode
 public class Shop {
-    int id;
-    String name;
+    private int id;
+    private String name;
     public String toString() {
         return String.format("ID - %d\nName - %s", id, name);
     }
